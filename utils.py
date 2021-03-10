@@ -19,7 +19,6 @@ def parse_csv(file_location):
 
     with open(file_location, newline='') as csvfile:
         file_content = csv.reader(csvfile, delimiter = ' ', quotechar = '|')
-        counter = 0
 
         for row in file_content:
             interaction_file_data = row[0].split(',')

@@ -41,7 +41,3 @@ def construct_lists_of_features_and_labels(filename):
         interacts.append(interactions[key])
 
     return (proteins, interacts)
-
-if __name__ == "__main__":
-    construct_lists_of_features_and_labels("data/humanAQ1.csv")
-    

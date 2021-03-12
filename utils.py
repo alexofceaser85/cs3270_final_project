@@ -37,7 +37,10 @@ def parse_is_interacted(file_location):
             for row in file_content:
                 if (is_on_header == False):
                     interaction_file_data = row[0].split(',')
-                    is_interacted.append(int(interaction_file_data[4]))
+                    if float(interaction_file_data[2]) <= 0.001:
+                        is_interacted.append(-1)
+                    else:
+                        is_interacted.append(int(interaction_file_data[4]))
                 else:
                     is_on_header = False
 

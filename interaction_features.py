@@ -9,6 +9,7 @@ import csv
 import uniprot_parser
 import sequence_similarity
 import pprint
+import random
 from progress.bar import IncrementalBar
 
 __author__ = "Alexander Ayers"
@@ -17,6 +18,13 @@ __version__ = "2-17-2021"
 degree = 33
 sigma = 1.0
 kappa = 0.37
+
+
+def random_combination(iterable, r):
+	pool = tuple(iterable)
+	n = len(pool)
+	indices = sorted(random.sample(range(n), r))
+	return tuple(pool[i] for i in indices)
 
 def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 	url = 'https://www.uniprot.org/uploadlists/'
@@ -52,9 +60,19 @@ def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 	interactions_uniprot = {}
 	protein_data, id_conversion = uniprot_parser.parse_txt_file(response.decode("utf-8"))
 
+
+	all_interactions = []
 	total_interactions = 0
 	for protein1, protein2 in interactions_string:
 		if protein1 in id_conversion and protein2 in id_conversion:
+			total_interactions = total_interactions + 1
+			all_interactions.append(protein1)
+			all_interactions.append(protein2)
+
+	for _ in range(1000):
+		combination = random_combination(all_interactions, 2)
+		if combination not in interactions_string:
+			interactions_string[combination] = 0
 			total_interactions = total_interactions + 1
 
 	bar = IncrementalBar('Processing', max=total_interactions)
@@ -73,21 +91,22 @@ def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 			similarity = sequence_similarity.compute_similarity(
 				uniprot1_sequeunce, uniprot2_sequeunce, degree, sigma, kappa)
 
-			interaction_score = interactions_string[protein1, protein2]
-			interaction_features = [interaction_score, similarity]
+			interaction_score = float(interactions_string[protein1, protein2])
+			interaction_label = (interaction_score > 0.5 and 1) or 0
+			interaction_features = [interaction_score, similarity, interaction_label]
 
 			interactions_uniprot[uniprot1, uniprot2] = interaction_features
 			interactions_uniprot[uniprot2, uniprot1] = interaction_features
 			output_data.append(
-				{'protein1': uniprot1, 'protein2': uniprot2, 'interaction_score': interaction_score, 'similarity': similarity})
+				{'protein1': uniprot1, 'protein2': uniprot2, 'interaction_score': interaction_score, 'similarity': similarity, 'interaction_label': interaction_label})
 			bar.next()
 
 	bar.finish()
 	pprint.pprint(interactions_uniprot["P01019", "P29972"])
 
 	with open(saved_filename, mode='w', newline='') as csv_file:
-		fieldnames = ['protein1', 'protein2', 'interaction_score', 'similarity']
-		writer = csv.DictWriter(csv_file, fieldnames=fieldnames )
+		fieldnames = ['protein1', 'protein2', 'interaction_score', 'similarity', 'interaction_label']
+		writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
 
 		writer.writeheader()
 		for data in output_data:

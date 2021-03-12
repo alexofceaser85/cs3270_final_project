@@ -6,14 +6,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.semi_supervised import LabelPropagation
 import pprint
+import utils
 
 __author__ = "Alexander Ayers"
 __version__ = "Spring 2021"
 
 def main():
   # define dataset
-    X, y = make_classification(n_samples=1000, n_features=2, n_informative=2, n_redundant=0, random_state=1)
-    print(y)
+    X = utils.parse_interaction_score_and_similarity("./interaction_data.csv")
+    y = utils.parse_is_interacted("./interaction_data.csv")
+    print(X)
+
 # split into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.50, random_state=1, stratify=y)
 # split train into labeled and unlabeled

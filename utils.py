@@ -9,6 +9,40 @@ This is the utils class for the project
 __author__ = "Alex DeCesare"
 __version__ = "10-March-2021"
 
+def parse_interaction_score_and_similarity(file_location):
+
+    interaction_score_and_similarity = []
+    is_on_header = True
+
+    with open(file_location, newline='') as csvfile:
+            file_content = csv.reader(csvfile, delimiter = ' ', quotechar = '|')
+
+            for row in file_content:
+                if (is_on_header == False):
+                    interaction_file_data = row[0].split(',')
+                    interaction_score_and_similarity.append([interaction_file_data[2], interaction_file_data[3]])
+                else:
+                    is_on_header = False
+
+    return interaction_score_and_similarity
+
+def parse_is_interacted(file_location):
+
+    is_interacted = []
+    is_on_header = True
+
+    with open(file_location, newline='') as csvfile:
+            file_content = csv.reader(csvfile, delimiter = ' ', quotechar = '|')
+
+            for row in file_content:
+                if (is_on_header == False):
+                    interaction_file_data = row[0].split(',')
+                    is_interacted.append(interaction_file_data[4])
+                else:
+                    is_on_header = False
+
+    return is_interacted
+
 def parse_csv(file_location):
 
     """

@@ -20,7 +20,7 @@ def parse_interaction_score_and_similarity(file_location):
             for row in file_content:
                 if (is_on_header == False):
                     interaction_file_data = row[0].split(',')
-                    interaction_score_and_similarity.append([interaction_file_data[2], interaction_file_data[3]])
+                    interaction_score_and_similarity.append([float(interaction_file_data[3])])
                 else:
                     is_on_header = False
 
@@ -37,7 +37,7 @@ def parse_is_interacted(file_location):
             for row in file_content:
                 if (is_on_header == False):
                     interaction_file_data = row[0].split(',')
-                    is_interacted.append(interaction_file_data[4])
+                    is_interacted.append(int(interaction_file_data[4]))
                 else:
                     is_on_header = False
 

@@ -9,7 +9,7 @@ This is the utils class for the project
 __author__ = "Alex DeCesare"
 __version__ = "10-March-2021"
 
-def parse_interaction_score_and_similarity(file_location):
+def parse_values(file_location, columns):
 
     interaction_score_and_similarity = []
     is_on_header = True
@@ -20,11 +20,15 @@ def parse_interaction_score_and_similarity(file_location):
             for row in file_content:
                 if (is_on_header == False):
                     interaction_file_data = row[0].split(',')
-                    interaction_score_and_similarity.append([float(interaction_file_data[3])])
+                   
+                    interaction_score_and_similarity.append(
+                        [float(interaction_file_data[i]) for i in columns])
+                   
                 else:
                     is_on_header = False
 
     return interaction_score_and_similarity
+
 
 def parse_is_interacted(file_location):
 
@@ -37,10 +41,7 @@ def parse_is_interacted(file_location):
             for row in file_content:
                 if (is_on_header == False):
                     interaction_file_data = row[0].split(',')
-                    if float(interaction_file_data[2]) <= 0.001:
-                        is_interacted.append(-1)
-                    else:
-                        is_interacted.append(int(interaction_file_data[4]))
+                    is_interacted.append(int(interaction_file_data[4]))
                 else:
                     is_on_header = False
 

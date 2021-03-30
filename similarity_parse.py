@@ -98,14 +98,14 @@ def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 			interactions_uniprot[uniprot1, uniprot2] = interaction_features
 			interactions_uniprot[uniprot2, uniprot1] = interaction_features
 			output_data.append(
-				{'protein1': uniprot1, 'protein2': uniprot2, 'interaction_score': interaction_score, 'similarity': similarity, 'interaction_label': interaction_label})
+				{'protein1': uniprot1, 'protein2': uniprot2, 'interaction_score': interaction_score, 'similarity': similarity, 'interaction_label': interaction_label, 'sequence_1': uniprot1_sequeunce, 'sequence_2': uniprot2_sequeunce})
 			bar.next()
 
 	bar.finish()
 	pprint.pprint(interactions_uniprot["P01019", "P29972"])
 
 	with open(saved_filename, mode='w', newline='') as csv_file:
-		fieldnames = ['protein1', 'protein2', 'interaction_score', 'similarity', 'interaction_label']
+		fieldnames = ['protein1', 'protein2', 'interaction_score', 'similarity', 'interaction_label', 'sequence_1', 'sequence_2']
 		writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
 
 		writer.writeheader()

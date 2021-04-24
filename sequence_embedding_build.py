@@ -16,6 +16,7 @@ alphabets = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K',
              'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V',
              'W', 'X', 'Y', 'U', 'O']
 
+
 def sequence_embedding(file_path):
     """
     clusters the data into different groups
@@ -23,10 +24,11 @@ def sequence_embedding(file_path):
 
     corpus = pd.read_csv(file_path)
     corpus = corpus.loc[:, ['protein1', 'sequence_1']]
-    
+
     corpus.columns = ['id', 'sequence']
     corpus['sequence'] = corpus['sequence'].map(list)
-    sgt_ = SGT(kappa=1, lengthsensitive=False, mode='multiprocessing', alphabets=alphabets)
+    sgt_ = SGT(kappa=1, lengthsensitive=False,
+               mode='multiprocessing', alphabets=alphabets)
     sgtembedding_df = sgt_.fit_transform(corpus)
     sgtembedding_df = sgtembedding_df.set_index('id')
 

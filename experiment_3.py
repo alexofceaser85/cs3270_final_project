@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""
+Experiment 3 that utilizes the Euclidean 
+sequence embedding and Label Propagation 
+to compare the PPIs.
+"""
+
 from numpy import array
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
@@ -10,7 +16,11 @@ import numpy as np
 import pandas as pd
 import math
 
+
 def calculate_distancs(embedding_frame, interaction_labels_orig):
+    """
+    Calculates the distances between protein interactions.
+    """
     bar = IncrementalBar('Processing', max=len(embedding_frame)**2)
     distances = {}
     interaction_labels = {}
@@ -27,7 +37,11 @@ def calculate_distancs(embedding_frame, interaction_labels_orig):
     bar.finish()
     return distances, interaction_labels
 
+
 def parse_sequence_embedding():
+    """
+    Parses the embedding given a CSV of sequences.
+    """
     embedding_frame = pd.read_csv('./protein_embedding.csv')
     embedding_frame.columns = ['protein_id', 'x1', 'x2']
     embedding_frame['x1'] = embedding_frame['x1'].map(float)
@@ -51,7 +65,11 @@ def parse_sequence_embedding():
 
     return calculate_distancs(embedding_frame, interaction_labels_orig)
 
+
 def main():
+    """
+    Main execution point for the experiment.
+    """
     # define dataset
     print('____________________________________')
     print()
@@ -82,6 +100,7 @@ def main():
         print('Accuracy: %.3f' % (score*100))
     print('Mean Accuracy: %.3f (SD: %.3f)' % (np.mean(scores), np.std(scores)))
     print('____________________________________')
+
 
 if __name__ == '__main__':
     main()

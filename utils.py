@@ -11,7 +11,9 @@ __version__ = "10-March-2021"
 
 
 def parse_values(file_location, columns):
-
+    """
+    Parses a file into a list of data with a given number of columns.
+    """
     interaction_score_and_similarity = []
     is_on_header = True
 
@@ -32,7 +34,9 @@ def parse_values(file_location, columns):
 
 
 def parse_is_interacted(file_location):
-
+    """
+    Parses a file into a list of proteins that do interact.
+    """
     is_interacted = []
     is_on_header = True
 

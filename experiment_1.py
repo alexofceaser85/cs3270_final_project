@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-
+"""
+Experiment 1 that utilizes the Sequence Similarity
+and Label Propagation to compare the PPIs.
+"""
 from numpy import array
 import numpy as np
 from sklearn.model_selection import KFold
@@ -13,6 +16,9 @@ __version__ = "Spring 2021"
 
 
 def main():
+    """
+    Execution point to the experiment.
+    """
     # define dataset
     print('____________________________________')
     print()

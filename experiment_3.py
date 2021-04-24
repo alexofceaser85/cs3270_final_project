@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-"""
-parses the content of the given file into clusters based upon a given range
-"""
-
 from numpy import concatenate
 from numpy import array
 from sgt import SGT
@@ -15,6 +11,7 @@ from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from progress.bar import IncrementalBar
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,82 +20,80 @@ import pprint
 import utils
 import random
 import csv
+import math
 
+def calculate_distancs(embedding_frame, interaction_labels_orig):
+    bar = IncrementalBar('Processing', max=len(embedding_frame)**2)
+    distances = {}
+    interaction_labels = {}
+    for _, vectorA in embedding_frame.iterrows():
+        for _, vectorB in embedding_frame.iterrows():
+            index = (vectorA['protein_id'], vectorB['protein_id'])
+            if index in interaction_labels_orig:
+                data = interaction_labels_orig.get(index)
+                distance = math.sqrt(
+                    (vectorA['x1'] - vectorB['x1']) ** 2 + (vectorA['x2'] - vectorB['x2']) ** 2)
+                interaction_labels[index] = data['interaction_label']
+                distances[index] = [distance]
+            bar.next()
+    bar.finish()
+    return distances, interaction_labels
+
+def parse_sequence_embedding():
+    embedding_frame = pd.read_csv('./protein_embedding.csv')
+    embedding_frame.columns = ['protein_id', 'x1', 'x2']
+    embedding_frame['x1'] = embedding_frame['x1'].map(float)
+    embedding_frame['x2'] = embedding_frame['x2'].map(float)
+    embedding_frame = embedding_frame.drop_duplicates(subset=['protein_id'])
+
+    X_frame = embedding_frame.loc[:, ['x1', 'x2']]
+    X_frame.columns = ['x1', 'x2']
+
+    interaction_frame = pd.read_csv('./interaction_data2.csv')
+    interaction_frame.columns = ['protein1', 'protein2', 'interaction_score',
+                                 'similarity', 'interaction_label', 'jaccard', 'l3_score', 'sequence_1', 'sequence_2']
+    interaction_frame['interaction_label'] = interaction_frame['interaction_label'].map(
+        int)
+    interaction_frame.set_index(['protein1', 'protein2'])
+
+    interaction_labels_orig = {}
+    for _, vector in interaction_frame.iterrows():
+        interaction_labels_orig[vector['protein1'],
+                                vector['protein2']] = vector
+
+    return calculate_distancs(embedding_frame, interaction_labels_orig)
 
 def main():
+    # define dataset
+    print('____________________________________')
+    print()
+    print('Experiment 3')
+    distances, interaction_labels = parse_sequence_embedding()
 
-	print("Enter the number of clusters")
-	degree = int(input())
+    X = array(list(distances.values()))
+    y = array(list(interaction_labels.values()))
+    kfold = KFold(n_splits=5, random_state=1, shuffle=True)
+    scores = []
+    for train, test in kfold.split(X):
+        X_train, X_test = X[train], X[test]
+        y_train, y_test = y[train], y[test]
 
-	# define dataset
-	print('____________________________________')
-	print()
-	print('Experiment 3')
+        norm = MinMaxScaler().fit(X_train)
+        X_train_norm = norm.transform(X_train)
+        X_test_norm = norm.transform(X_test)
 
-	transformed_pca = array(utils.parse_values("./protein_embedding.csv", [ 1, 2]))
-
-	data_frame = pd.DataFrame(data=transformed_pca, columns=['x1', 'x2'])
-
-
-	data_frame['x1'] = data_frame['x1'].map(float)
-	data_frame['x2'] = data_frame['x2'].map(float)
-
-	X = array(data_frame)
-	y = array(utils.parse_is_interacted("./interaction_data.csv"))
-	print(X)
-	kfold = KFold(n_splits=5, random_state=1, shuffle=True)
-	scores = []
-	for train, test in kfold.split(X):
-		X_train, X_test = X[train], X[test]
-		y_train, y_test = y[train], y[test]
-
-		norm = MinMaxScaler().fit(X_train)
-		X_train_norm = norm.transform(X_train)
-		X_test_norm = norm.transform(X_test)
-
-		model = LabelPropagation(max_iter = 1000, n_jobs = -1)
-		# fit model on training dataset
-		model.fit(X_train_norm, y_train)
-		# make predictions on hold out test set
-		yhat = model.predict(X_test_norm)
-		# calculate score for test set
-		score = accuracy_score(y_test, yhat)
-		scores.append(score*100)
-		# summarize score
-		print('Accuracy: %.3f' % (score*100))
-	print('Mean Accuracy: %.3f (SD: %.3f)' % (np.mean(scores), np.std(scores)))
-	print('____________________________________')
-
-
-	kmeans = KMeans(n_clusters=degree, max_iter=1000)
-	kmeans.fit(data_frame)
-
-	labels = kmeans.predict(data_frame)
-
-
-	data_frame['label'] = labels
-
-	plt.figure(figsize=(5, 5))
-	colmap = generate_colors(degree)
-	colors = list(map(lambda x: colmap[x+1], labels))
-	plt.scatter(data_frame['x1'], data_frame['x2'], color=colors, alpha=0.5)
-	plt.show()
-
-def generate_colors(number_of_colors):
-	"""
-	generates the differant colors for the scatter plot
-	"""
-	colors = list(mcolors.CSS4_COLORS)
-	random.shuffle(colors)
-
-	colors_to_use = {}
-	index = 0
-
-	while index < number_of_colors:
-		colors_to_use[index+1] = colors[index]
-		index = index + 1
-	return colors_to_use
-
+        model = LabelPropagation(max_iter=1000, n_jobs=-1)
+        # fit model on training dataset
+        model.fit(X_train_norm, y_train)
+        # make predictions on hold out test set
+        yhat = model.predict(X_test_norm)
+        # calculate score for test set
+        score = accuracy_score(y_test, yhat)
+        scores.append(score*100)
+        # summarize score
+        print('Accuracy: %.3f' % (score*100))
+    print('Mean Accuracy: %.3f (SD: %.3f)' % (np.mean(scores), np.std(scores)))
+    print('____________________________________')
 
 if __name__ == '__main__':
-	main()
+    main()

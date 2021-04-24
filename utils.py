@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import csv
-
 """
 This is the utils class for the project
 """
+
+import csv
 
 __author__ = "Alex DeCesare"
 __version__ = "10-March-2021"
@@ -14,23 +14,23 @@ def parse_values(file_location, columns):
     """
     Parses a file into a list of data with a given number of columns.
     """
-    interaction_score_and_similarity = []
+    score_and_similarity = []
     is_on_header = True
 
     with open(file_location, newline='') as csvfile:
         file_content = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
         for row in file_content:
-            if (is_on_header == False):
+            if not is_on_header:
                 interaction_file_data = row[0].split(',')
 
-                interaction_score_and_similarity.append(
+                score_and_similarity.append(
                     [float(interaction_file_data[i]) for i in columns])
 
             else:
                 is_on_header = False
 
-    return interaction_score_and_similarity
+    return score_and_similarity
 
 
 def parse_is_interacted(file_location):
@@ -44,7 +44,7 @@ def parse_is_interacted(file_location):
         file_content = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
         for row in file_content:
-            if (is_on_header == False):
+            if not is_on_header:
                 interaction_file_data = row[0].split(',')
                 is_interacted.append(int(interaction_file_data[4]))
             else:

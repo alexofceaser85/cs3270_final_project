@@ -40,7 +40,7 @@ def calculate_distancs(embedding_frame, interaction_labels_orig):
     return distances, interaction_labels
 
 def parse_sequence_embedding():
-    embedding_frame = pd.read_csv('./protein_embedding.csv')
+    embedding_frame = pd.read_csv('./data/protein_embedding.csv')
     embedding_frame.columns = ['protein_id', 'x1', 'x2']
     embedding_frame['x1'] = embedding_frame['x1'].map(float)
     embedding_frame['x2'] = embedding_frame['x2'].map(float)
@@ -49,7 +49,7 @@ def parse_sequence_embedding():
     X_frame = embedding_frame.loc[:, ['x1', 'x2']]
     X_frame.columns = ['x1', 'x2']
 
-    interaction_frame = pd.read_csv('./interaction_data2.csv')
+    interaction_frame = pd.read_csv('./data/interaction_data2.csv')
     interaction_frame.columns = ['protein1', 'protein2', 'interaction_score',
                                  'similarity', 'interaction_label', 'jaccard', 'l3_score', 'sequence_1', 'sequence_2']
     interaction_frame['interaction_label'] = interaction_frame['interaction_label'].map(

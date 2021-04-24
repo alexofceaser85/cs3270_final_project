@@ -18,8 +18,8 @@ def main():
     print('____________________________________')
     print()
     print('Experiment 2')
-    X = array(utils.parse_values("./interaction_data2.csv", [6]))
-    y = array(utils.parse_is_interacted("./interaction_data2.csv"))
+    X = array(utils.parse_values("./data/interaction_data2.csv", [6]))
+    y = array(utils.parse_is_interacted("./data/interaction_data2.csv"))
     kfold = KFold(n_splits=5, random_state=1, shuffle=True)
     scores = []
     for train, test in kfold.split(X):

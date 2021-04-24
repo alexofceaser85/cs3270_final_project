@@ -56,7 +56,7 @@ def calculate_l3_score(nodes, path):
 	return score
 
 def main():
-	interactions, raw_data = parse_data("./interaction_data.csv")
+	interactions, raw_data = parse_data("./data/interaction_data.csv")
 	tcp_jaccard = {}
 	l3_scores = {}
 	nodes = interactions.items()
@@ -84,7 +84,7 @@ def main():
 			continue
 		output_data[proteins] = entry
 		#print(entry)
-	with open("interaction_data2.csv", mode='w', newline='') as csv_file:
+	with open("./data/interaction_data2.csv", mode='w', newline='') as csv_file:
 		fieldnames = ['protein1', 'protein2', 'interaction_score', 
                     'similarity', 'interaction_label', 'jaccard', 'l3_score','sequence_1', 'sequence_2']
 		writer = csv.DictWriter(csv_file, fieldnames=fieldnames)

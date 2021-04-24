@@ -102,7 +102,6 @@ def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 			bar.next()
 
 	bar.finish()
-	pprint.pprint(interactions_uniprot["P01019", "P29972"])
 
 	with open(saved_filename, mode='w', newline='') as csv_file:
 		fieldnames = ['protein1', 'protein2', 'interaction_score', 'similarity', 'interaction_label', 'sequence_1', 'sequence_2']
@@ -113,4 +112,5 @@ def convert_id_and_calculate_similarity(loaded_filename, saved_filename):
 			writer.writerow(data)
 
 if __name__ == "__main__":
-    convert_id_and_calculate_similarity("interactions.csv", "interaction_data.csv")
+    convert_id_and_calculate_similarity(
+    	"./data/interactions.csv", "./data/interaction_data.csv")

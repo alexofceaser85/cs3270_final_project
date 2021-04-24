@@ -38,7 +38,7 @@ def sequence_embedding(file_path):
     pca.fit(sgtembedding_df)
     transformed_pca = pca.transform(sgtembedding_df)
     print(np.sum(pca.explained_variance_ratio_))
-    with open("protein_embedding.csv", mode='w', newline='') as csv_file:
+    with open("./data/protein_embedding.csv", mode='w', newline='') as csv_file:
         fieldnames = ['protein_id', 'x1', 'x2']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
@@ -52,4 +52,4 @@ def sequence_embedding(file_path):
 
 
 if __name__ == '__main__':
-    sequence_embedding('./interaction_data.csv')
+    sequence_embedding('./data/interaction_data.csv')

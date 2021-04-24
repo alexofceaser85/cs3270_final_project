@@ -4,13 +4,9 @@
 parses the content of the given file into clusters based upon a given range
 """
 import numpy as np
-from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import pandas as pd
 from sgt import SGT
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import random
 import csv
 
 __author__ = "Alex DeCesare"

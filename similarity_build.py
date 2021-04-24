@@ -2,7 +2,6 @@
 '''
 Parses out information from UNIPROT into various formats.clscls
 '''
-from typing import List
 import urllib.parse
 import urllib.request
 import csv

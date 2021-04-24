@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
-from numpy import concatenate
 from numpy import array
 import numpy as np
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import MinMaxScaler
-import pprint
 import utils
 
 __author__ = "Alexander Ayers"

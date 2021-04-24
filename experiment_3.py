@@ -1,25 +1,13 @@
 #!/usr/bin/env python3
 
-from numpy import concatenate
 from numpy import array
-from sgt import SGT
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 from progress.bar import IncrementalBar
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import pprint
-import utils
-import random
-import csv
 import math
 
 def calculate_distancs(embedding_frame, interaction_labels_orig):

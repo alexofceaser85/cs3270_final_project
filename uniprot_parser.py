@@ -4,9 +4,6 @@
 Parses out information from UNIPROT into various formats.
 '''
 
-import urllib.parse
-import pprint
-import urllib.request
 __author__ = "Alexander Ayers"
 __version__ = "2-17-2021"
 

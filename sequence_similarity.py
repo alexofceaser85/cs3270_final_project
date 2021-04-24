@@ -1,4 +1,3 @@
-import math
 
 def compute_similarity(avec, bvec, degree, sigma, kappa):
 	min_length = min(len(avec),len(bvec))

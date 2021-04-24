@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import csv
-import pprint
 import math
 
 def parse_data(file_location):

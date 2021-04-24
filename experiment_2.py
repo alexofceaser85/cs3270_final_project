@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
 
-from numpy import concatenate
+"""
+Experiment 2 that utilizes the Jaccard and L3 score
+and Label Propagation to compare the PPIs.
+"""
+
 from numpy import array
 import numpy as np
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import MinMaxScaler
-
-import pprint
 import utils
 
+
 def main():
+    """
+    Execution point to the experiment.
+    """
     # define dataset
     print('____________________________________')
     print()
     print('Experiment 2')
-    X = array(utils.parse_values("./data/interaction_data2.csv", [6]))
+    X = array(utils.parse_values("./data/interaction_data2.csv", [5,6]))
     y = array(utils.parse_is_interacted("./data/interaction_data2.csv"))
     kfold = KFold(n_splits=5, random_state=1, shuffle=True)
     scores = []
@@ -30,7 +34,7 @@ def main():
         X_train_norm = norm.transform(X_train)
         X_test_norm = norm.transform(X_test)
 
-        model = LabelPropagation(max_iter = 1000, n_jobs = -1)
+        model = LabelPropagation(max_iter=1000, n_jobs=-1)
         # fit model on training dataset
         model.fit(X_train_norm, y_train)
         # make predictions on hold out test set
@@ -42,6 +46,7 @@ def main():
         print('Accuracy: %.3f' % (score*100))
     print('Mean Accuracy: %.3f (SD: %.3f)' % (np.mean(scores), np.std(scores)))
     print('____________________________________')
+
 
 if __name__ == "__main__":
     main()

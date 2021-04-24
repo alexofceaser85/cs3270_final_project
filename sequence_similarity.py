@@ -1,125 +1,139 @@
-import math
+#!/usr/bin/env python3
+"""
+Methods for computing sequence similarity of PPI.
+"""
+__author__ = "Furichous Jones IV"
+__version__ = "Spring 2021"
+
 
 def compute_similarity(avec, bvec, degree, sigma, kappa):
-	min_length = min(len(avec),len(bvec))
-	avec = avec[:min_length]
-	bvec = bvec[:min_length]
-	
-	half_length = len(avec) // 2
+    """
+    Computes sequences between two protein sequences.
+    """
+    min_length = min(len(avec), len(bvec))
+    avec = avec[:min_length]
+    bvec = bvec[:min_length]
 
-	L = 21
-	'''EXTRACT ACCEPTORS'''
+    half_length = len(avec) // 2
 
-	avec_first_half = avec[0 : half_length]
-	bvec_first_half = bvec[0 : half_length]
+    L = 21
+    '''EXTRACT ACCEPTORS'''
 
-	alen = len(avec_first_half)
-	blen = len(bvec_first_half)
-	splice_site = alen // 2
+    avec_first_half = avec[0: half_length]
+    bvec_first_half = bvec[0: half_length]
 
-	''' A C C E P T O R     S I M I L A R I T Y '''
+    alen = len(avec_first_half)
+    blen = len(bvec_first_half)
+    splice_site = alen // 2
 
-	sumk_acc = 0.0
-	sum_acc = 0.0
+    ''' A C C E P T O R     S I M I L A R I T Y '''
 
-	for k in range(1, degree+1):
-		for i in range(0, alen - k + 1):
-			l = 1
-			while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
-				match = True
-				j = i
-				while (j < i + k) and match:
-					if (j - l < 0):
-						match = False
-						break
-					else:
-						match = (avec_first_half[j] == bvec_first_half[j - l])
-					j += 1
-				if (match):
-					delta = (1 / (2 * (l + 1)))
-					sumk_acc += (delta * (1 / alen))
-				l += 1
+    sumk_acc = 0.0
+    sum_acc = 0.0
 
-			l = 0
-			while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
-				match = True
-				j = i
-				while (j < i + k) and match:
-					if (j + l >= alen):
-						match = False
-						break
-					else:
-						
-						match = (avec_first_half[j] == bvec_first_half[j + l])
-					j += 1
-				if (match):
-					delta = (1 / (2 * (l + 1)))
-					sumk_acc += (delta * (1 / alen))
-				l += 1
-			
-		beta = (2 * (degree - k + 1)) / (degree * (degree + 1))
-		sum_acc += sumk_acc * beta
+    for k in range(1, degree+1):
+        for i in range(0, alen - k + 1):
+            l = 1
+            while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
+                match = True
+                j = i
+                while (j < i + k) and match:
+                    if (j - l < 0):
+                        match = False
+                        break
+                    else:
+                        match = (avec_first_half[j] == bvec_first_half[j - l])
+                    j += 1
+                if (match):
+                    delta = (1 / (2 * (l + 1)))
+                    sumk_acc += (delta * (1 / alen))
+                l += 1
 
-	''' EXTRACT DONORS '''
-	avec_second_half = avec[half_length : len(avec)]
-	bvec_second_half = bvec[half_length : len(bvec)]
+            l = 0
+            while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
+                match = True
+                j = i
+                while (j < i + k) and match:
+                    if (j + l >= alen):
+                        match = False
+                        break
+                    else:
 
-	alen = len(avec_second_half)
-	blen = len(bvec_second_half)
+                        match = (avec_first_half[j] == bvec_first_half[j + l])
+                    j += 1
+                if (match):
+                    delta = (1 / (2 * (l + 1)))
+                    sumk_acc += (delta * (1 / alen))
+                l += 1
 
-	''' D O N O R     S I M I L A R I T Y '''
-	sumk_don = 0.0
-	sum_don = 0.0
+        beta = (2 * (degree - k + 1)) / (degree * (degree + 1))
+        sum_acc += sumk_acc * beta
 
-	for k in range(1, degree+1):
-		for i in range(0, blen - k + 1):
-			l = 1
-			while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
-				match = True
-				j = i
-				while (j < i + k) and match:
-					if (j - l < 0):
-						match = False
-						break
-					else:
-						match = (avec_second_half[j] == bvec_second_half[j - l])
-					j += 1
-				if (match):
-					delta = (1 / (2 * (l + 1)))
-					sumk_don += (delta * (1 / alen))
-				l += 1
+    ''' EXTRACT DONORS '''
+    avec_second_half = avec[half_length: len(avec)]
+    bvec_second_half = bvec[half_length: len(bvec)]
 
-			l = 0
-			while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
-				match = True
-				j = i
-				while (j < i + k) and match:
-					if (j + l >= alen):
-						match = False
-						break
-					else:
-						match = (avec_second_half[j] == bvec_second_half[j + l])
-					j += 1
-				if (match):
-					delta = (1 / (2 * (l + 1)))
-					sumk_don += (delta * (1 / alen))
-				l += 1
+    alen = len(avec_second_half)
+    blen = len(bvec_second_half)
 
-		beta = (2 * (degree - k + 1)) / (degree * (degree + 1))
-		sum_don += sumk_don * beta
+    ''' D O N O R     S I M I L A R I T Y '''
+    sumk_don = 0.0
+    sum_don = 0.0
 
-	return sum_acc + sum_don
+    for k in range(1, degree+1):
+        for i in range(0, blen - k + 1):
+            l = 1
+            while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
+                match = True
+                j = i
+                while (j < i + k) and match:
+                    if (j - l < 0):
+                        match = False
+                        break
+                    else:
+                        match = (avec_second_half[j]
+                                 == bvec_second_half[j - l])
+                    j += 1
+                if (match):
+                    delta = (1 / (2 * (l + 1)))
+                    sumk_don += (delta * (1 / alen))
+                l += 1
+
+            l = 0
+            while (l <= (round(kappa * abs(splice_site - l)) + 1)) and (l < L):
+                match = True
+                j = i
+                while (j < i + k) and match:
+                    if (j + l >= alen):
+                        match = False
+                        break
+                    else:
+                        match = (avec_second_half[j]
+                                 == bvec_second_half[j + l])
+                    j += 1
+                if (match):
+                    delta = (1 / (2 * (l + 1)))
+                    sumk_don += (delta * (1 / alen))
+                l += 1
+
+        beta = (2 * (degree - k + 1)) / (degree * (degree + 1))
+        sum_don += sumk_don * beta
+
+    return sum_acc + sum_don
 
 
 def main():
-	avec = "MASEFKKKLFWRAVVAEFLATASIF"
-	bvec = "TASIFKVKLFKKKLFWRASSAEFLA"
-	degree = 33
-	sigma = 1.0
-	kappa = 0.37
+    """
+    Main execution point for testing purposes.
+    """
+    avec = "MASEFKKKLFWRAVVAEFLATASIF"
+    bvec = "TASIFKVKLFKKKLFWRASSAEFLA"
+    degree = 33
+    sigma = 1.0
+    kappa = 0.37
 
-	similarity = compute_similarity(avec, bvec, degree, sigma, kappa)
-	print(similarity)
+    similarity = compute_similarity(avec, bvec, degree, sigma, kappa)
+    print(similarity)
 
 
 if __name__ == "__main__":

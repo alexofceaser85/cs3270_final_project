@@ -38,3 +38,6 @@ Media/ISPPIIntro.mp4
 Media/ExperimentalSetup.mp4
 Media/DataGeneration.mp4
 Media/Abstract.mp4
+__pycache__/sequence_similarity.cpython-39.pyc
+__pycache__/uniprot_parser.cpython-39.pyc
+__pycache__/utils.cpython-39.pyc
